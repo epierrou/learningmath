@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculus Canyon · The Math Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    .step h2 { font-weight: 400; letter-spacing: -.01em; }
+    .lead em, .m { font-family: 'Fraunces', Georgia, serif; font-style: italic; color: var(--ink); }
+    .slider-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin-top: 14px; }
+    .slider-row label { color: var(--muted); font-size: .9em; }
+    .slider-row output { font-variant-numeric: tabular-nums; min-width: 6ch; text-align: right; color: var(--accent); font-weight: 600; }
+    .caption { font-size: .85em; color: var(--muted); margin: 8px 0 0; }
+    .question { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .question p { margin-bottom: 6px; }
+    .choice { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 400; }
+    .aside { border-left: 2px solid var(--accent); padding: 2px 0 2px 16px; color: var(--muted); font-size: .95em; }
+    .canvas-gap { height: 12px; }
+  </style>
+</head>
+<body class="tier-advanced">
+  <header class="stop-top">
+    <a class="back" href="../index.html">← Map</a>
+    <span class="stop-title">∞ Calculus Canyon</span>
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <main class="stop">
+    <section class="step" id="s1">
+      <p class="step-kicker">I · The local view</p>
+      <h2>Every smooth curve is secretly straight</h2>
+      <p class="lead">Below is the parabola <em>y = x²</em>, centred on the point (1, 1). Zoom in. Watch the bend disappear: up close, the curve becomes indistinguishable from a line.</p>
+      <div class="panel">
+        <canvas id="c1" aria-label="Zoomable graph of y equals x squared"></canvas>
+        <div class="slider-row">
+          <label for="zoom">Zoom</label>
+          <input class="range" id="zoom" type="range" min="0" max="300" value="0">
+          <output id="zoomOut">1×</output>
+        </div>
+        <div class="readout">
+          <span>Slope across the window: <b id="slope1"></b></span>
+          <span>Visible bend: <b id="bend1"></b></span>
+        </div>
+        <p class="feedback" id="msg1"></p>
+      </div>
+      <p class="aside">The dashed line joins the two edges of the window. As you zoom, the curve hugs it ever more closely, and its slope settles on a single number.</p>
+      <div class="step-actions"><button class="btn next" disabled>Continue →</button></div>
+    </section>
+
+    <section class="step" id="s2">
+      <p class="step-kicker">II · The derivative</p>
+      <h2>Slope, everywhere at once</h2>
+      <p class="lead">That limiting slope is the <em>derivative</em>. Slide the point along the curve. Each slope you visit is recorded in the lower plot. Explore widely and a pattern will emerge.</p>
+      <div class="panel">
+        <canvas id="c2a" aria-label="Parabola with tangent line"></canvas>
+        <div class="slider-row">
+          <label for="aSlider"><span class="m">a</span></label>
+          <input class="range" id="aSlider" type="range" min="-2.5" max="2.5" step="0.01" value="1">
+          <output id="aOut">1.00</output>
+        </div>
+        <div class="canvas-gap"></div>
+        <canvas id="c2b" aria-label="Plot of the slopes you have visited"></canvas>
+        <p class="caption">Lower plot: the slope at <span class="m">a</span>, recorded as you explore.</p>
+        <div class="readout"><span>Tangent slope at <span class="m">a</span>: <b id="slope2"></b></span><span>Explored: <b id="explored"></b></span></div>
+        <div class="question" id="q2" hidden>
+          <p>The recorded slopes fall on a straight line. What is the slope of <em>y = x²</em> at any point <span class="m">x</span>?</p>
+          <div class="choices" id="q2choices"></div>
+        </div>
+        <p class="feedback" id="msg2"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Continue →</button></div>
+    </section>
+
+    <section class="step" id="s3">
+      <p class="step-kicker">III · The integral</p>
+      <h2>Area, by brute patience</h2>
+      <p class="lead">How much area lies beneath <em>y = x²</em> between 0 and 1? No formula for a curved region, so approximate it with rectangles, then use more and thinner ones.</p>
+      <div class="panel">
+        <canvas id="c3" aria-label="Rectangles approximating the area under y equals x squared"></canvas>
+        <div class="slider-row">
+          <label for="nSlider">Rectangles</label>
+          <input class="range" id="nSlider" type="range" min="1" max="200" value="4">
+          <output id="nOut">4</output>
+        </div>
+        <div class="readout"><span>Total area of rectangles: <b id="sum3"></b></span></div>
+        <div class="question" id="q3" hidden>
+          <p>The total keeps creeping upward, ever more slowly. What value is it closing in on?</p>
+          <div class="choices" id="q3choices"></div>
+        </div>
+        <p class="feedback" id="msg3"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Finish →</button></div>
+    </section>
+
+    <section class="step finish">
+      <div class="medal">✦</div>
+      <h2>You've reached the canyon floor</h2>
+      <p>You have met both halves of calculus. Zooming in reveals the <em class="m">derivative</em>: the slope of x² is 2x. Slicing thinly reveals the <em class="m">integral</em>: the area under x² from 0 to 1 is ⅓.</p>
+      <p>The Fundamental Theorem of Calculus says these two ideas undo each other. That's a story for a future stop.</p>
+      <div class="controls center">
+        <a class="btn" href="../index.html">Return to the map</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/progress.js"></script>
+  <script src="../js/stop.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const css = name => getComputedStyle(document.body).getPropertyValue(name).trim();
+    const f = x => x * x;
+
+    function setup(canvas, aspect) {
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.clientWidth || 600, h = Math.round(w * aspect);
+      canvas.style.height = h + 'px';
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { ctx, w, h };
+    }
+
+    // Shared plotting helpers. view = { x0, x1, y0, y1 }.
+    function plotter(canvas, aspect, view) {
+      const { ctx, w, h } = setup(canvas, aspect);
+      const X = x => (x - view.x0) / (view.x1 - view.x0) * w;
+      const Y = y => h - (y - view.y0) / (view.y1 - view.y0) * h;
+      ctx.clearRect(0, 0, w, h);
+      return { ctx, w, h, X, Y };
+    }
+
+    function niceStep(span) {
+      const raw = span / 6, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+      return p * (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10);
+    }
+
+    function grid(P, view) {
+      const { ctx, w, h, X, Y } = P;
+      ctx.lineWidth = 1;
+      [[view.x0, view.x1, true], [view.y0, view.y1, false]].forEach(([a, b, vertical]) => {
+        const st = niceStep(b - a);
+        for (let v = Math.ceil(a / st) * st; v <= b; v += st) {
+          const isAxis = Math.abs(v) < st / 1e6;
+          ctx.strokeStyle = isAxis ? 'rgba(235,232,223,.35)' : 'rgba(235,232,223,.07)';
+          ctx.beginPath();
+          if (vertical) { ctx.moveTo(X(v), 0); ctx.lineTo(X(v), h); } else { ctx.moveTo(0, Y(v)); ctx.lineTo(w, Y(v)); }
+          ctx.stroke();
+        }
+      });
+    }
+
+    function curve(P, view, color, width = 2.5) {
+      const { ctx, w, X, Y } = P;
+      ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
+      for (let i = 0; i <= 400; i++) {
+        const x = view.x0 + (view.x1 - view.x0) * i / 400;
+        i ? ctx.lineTo(X(x), Y(f(x))) : ctx.moveTo(X(x), Y(f(x)));
+      }
+      ctx.stroke();
+    }
+
+    function dot(P, x, y, color, r = 5) {
+      P.ctx.fillStyle = color; P.ctx.beginPath(); P.ctx.arc(P.X(x), P.Y(y), r, 0, Math.PI * 2); P.ctx.fill();
+    }
+
+    // ---------- I: zoom ----------
+    let unlocked1 = false;
+    function draw1() {
+      const z = Math.pow(10, $('zoom').value / 100);
+      const c = $('c1'), aspect = 0.62;
+      const hw = 1 / z, hh = hw * aspect;
+      const view = { x0: 1 - hw, x1: 1 + hw, y0: 1 - hh, y1: 1 + hh };
+      const P = plotter(c, aspect, view);
+      grid(P, view);
+      // chord across the window
+      P.ctx.setLineDash([6, 6]); P.ctx.strokeStyle = css('--accent-2'); P.ctx.lineWidth = 1.5;
+      P.ctx.beginPath(); P.ctx.moveTo(P.X(view.x0), P.Y(f(view.x0))); P.ctx.lineTo(P.X(view.x1), P.Y(f(view.x1))); P.ctx.stroke();
+      P.ctx.setLineDash([]);
+      curve(P, view, css('--accent'));
+      dot(P, 1, 1, css('--ink'));
+
+      $('zoomOut').textContent = (z < 10 ? z.toFixed(1) : Math.round(z)) + '×';
+      $('slope1').textContent = ((f(1 + hw) - f(1)) / hw).toFixed(4);
+      // Max gap between the parabola and the chord is hw², relative to the window's height.
+      $('bend1').textContent = (100 * hw * hw / (2 * hh)).toFixed(2) + '% of the window';
+      if (z >= 100 && !unlocked1) {
+        unlocked1 = true;
+        Stop.say($('msg1'), 'At this magnification the curve is, for all practical purposes, a straight line of slope 2.', 'good');
+        Stop.unlock($('s1'));
+      }
+    }
+    $('zoom').addEventListener('input', draw1);
+
+    // ---------- II: tangent & derivative ----------
+    const visited = new Map(); // bucket -> a
+    let q2shown = false;
+    function draw2() {
+      const a = +$('aSlider').value;
+      $('aOut').textContent = a.toFixed(2);
+      $('slope2').textContent = (2 * a).toFixed(2);
+      visited.set(Math.round(a * 2), a);
+      visited.set('a' + a.toFixed(2), a);
+
+      const viewA = { x0: -3, x1: 3, y0: -2, y1: 8 };
+      const P = plotter($('c2a'), 0.58, viewA);
+      grid(P, viewA);
+      // tangent line
+      P.ctx.strokeStyle = css('--accent-2'); P.ctx.lineWidth = 2;
+      P.ctx.beginPath(); P.ctx.moveTo(P.X(-3), P.Y(f(a) + 2 * a * (-3 - a))); P.ctx.lineTo(P.X(3), P.Y(f(a) + 2 * a * (3 - a))); P.ctx.stroke();
+      curve(P, viewA, css('--accent'));
+      dot(P, a, f(a), css('--ink'), 6);
+
+      const viewB = { x0: -3, x1: 3, y0: -6, y1: 6 };
+      const Q = plotter($('c2b'), 0.42, viewB);
+      grid(Q, viewB);
+      visited.forEach((v, k) => { if (typeof k === 'string') dot(Q, v, 2 * v, css('--accent-3'), 3); });
+      dot(Q, a, 2 * a, css('--ink'), 6);
+
+      const buckets = [...visited.keys()].filter(k => typeof k === 'number').length;
+      $('explored').textContent = `${Math.min(buckets, 7)} / 7 regions`;
+      if (buckets >= 7 && !q2shown) {
+        q2shown = true;
+        $('q2').hidden = false;
+        askChoices($('q2choices'), ['x²', '2x', 'x / 2', '2'], '2x', $('msg2'), $('s2'),
+          'Exactly. The derivative of x² is 2x: at x = 3 the curve climbs 6 units per unit of run.',
+          'Check it against the readout: at a = 1.5, the slope shows 3.00.');
+      }
+    }
+    $('aSlider').addEventListener('input', draw2);
+
+    // ---------- III: Riemann sums ----------
+    let q3shown = false;
+    function draw3() {
+      const n = +$('nSlider').value;
+      $('nOut').textContent = n;
+      const view = { x0: -0.08, x1: 1.12, y0: -0.08, y1: 1.12 };
+      const P = plotter($('c3'), 0.62, view);
+      grid(P, view);
+      let sum = 0;
+      const dx = 1 / n;
+      P.ctx.fillStyle = 'rgba(217,178,95,.28)';
+      P.ctx.strokeStyle = 'rgba(217,178,95,.85)';
+      P.ctx.lineWidth = n > 60 ? 0.5 : 1;
+      for (let i = 0; i < n; i++) {
+        const x = i * dx, hgt = f(x);
+        sum += hgt * dx;
+        const px = P.X(x), py = P.Y(hgt), pw = P.X(x + dx) - px, ph = P.Y(0) - py;
+        P.ctx.fillRect(px, py, pw, ph);
+        if (n <= 120) P.ctx.strokeRect(px, py, pw, ph);
+      }
+      curve(P, { x0: -0.05, x1: 1.1 }, css('--ink'), 2);
+      $('sum3').textContent = sum.toFixed(5);
+      if (n >= 40 && !q3shown) {
+        q3shown = true;
+        $('q3').hidden = false;
+        askChoices($('q3choices'), ['1/2', '1/3', '1/4', '3/10'], '1/3', $('msg3'), $('s3'),
+          'Yes: 0.3333… The area under x² from 0 to 1 is exactly ⅓. With infinitely many rectangles, the approximation becomes exact. That limit is the integral.',
+          'Push the slider further and watch which digits settle.');
+      }
+    }
+    $('nSlider').addEventListener('input', draw3);
+
+    function askChoices(host, options, right, msgEl, section, yes, no) {
+      host.innerHTML = '';
+      Stop.shuffle(options).forEach(opt => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice'; b.textContent = opt;
+        b.addEventListener('click', () => {
+          if (opt === right) {
+            b.classList.add('right');
+            host.querySelectorAll('button').forEach(x => x.disabled = true);
+            Stop.say(msgEl, yes, 'good');
+            Stop.unlock(section);
+          } else {
+            b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+            Stop.say(msgEl, no, 'bad');
+          }
+        });
+        host.appendChild(b);
+      });
+    }
+
+    // Canvases need a visible width, so draw when each step appears and on resize.
+    $('s1').addEventListener('enter', draw1);
+    $('s2').addEventListener('enter', draw2);
+    $('s3').addEventListener('enter', draw3);
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const vis = document.querySelector('.step:not([hidden])');
+        ({ s1: draw1, s2: draw2, s3: draw3 })[vis && vis.id]?.();
+      }, 120);
+    });
+
+    Stop.init('calculus');
+  </script>
+</body>
+</html>

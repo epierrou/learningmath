@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fraction Falls · The Math Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    .pizza-wrap { display: flex; justify-content: center; }
+    .pizza { width: min(260px, 70vw); height: auto; }
+    .pizza .slice path { fill: #ffcf5a; stroke: #fff8e7; stroke-width: 3; transition: fill .2s, opacity .2s; }
+    .pizza .slice .pep { fill: #d64535; }
+    .pizza .slice.dim { opacity: .18; }
+    .pizza .slice.eaten path { fill: transparent; stroke: #d8c3a0; stroke-dasharray: 5 5; }
+    .pizza .slice.eaten .pep { display: none; }
+    .pizza.clickable .slice { cursor: pointer; }
+    .pizza.clickable .slice:not(.eaten):hover path { fill: #ffdd85; }
+    .pizza .slice:focus-visible { outline: none; }
+    .pizza .slice:focus-visible path { stroke: var(--accent-2); stroke-width: 5; }
+    .friends { text-align: center; font-size: 38px; letter-spacing: 4px; margin: 0 0 6px; }
+    .counter { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px; font-size: 1.25em; font-weight: 800; }
+    .counter .btn { min-width: 56px; font-size: 1.3em; padding: 0; }
+    .eat-readout { text-align: center; font-size: 1.4em; font-weight: 700; margin: 12px 0 0; }
+    .eat-readout .frac { font-size: 1.3em; color: var(--accent); }
+    .vs { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px; }
+    .vs-word { font-weight: 800; color: var(--muted); font-size: 1.3em; }
+    .pick {
+      display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
+      padding: 12px 14px; border-radius: 24px; border: 0; background: #fffdf6;
+      box-shadow: inset 0 0 0 3px var(--line), 0 5px 0 var(--line); transition: transform .12s, box-shadow .15s;
+    }
+    .pick:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 3px var(--accent), 0 5px 0 var(--line); }
+    .pick .pizza { width: min(170px, 36vw); }
+    .pick .frac { font-size: 1.6em; }
+    .pick.right { box-shadow: inset 0 0 0 4px var(--good); }
+    .pick.wrong { animation: shake .35s; box-shadow: inset 0 0 0 3px var(--bad); }
+    .round-label { text-align: center; color: var(--muted); font-weight: 700; margin: 0 0 10px; }
+  </style>
+</head>
+<body class="tier-primary">
+  <header class="stop-top">
+    <a class="back" href="../index.html">← Map</a>
+    <span class="stop-title">🍕 Fraction Falls</span>
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <main class="stop">
+    <section class="step" id="s1">
+      <p class="step-kicker">Step 1 of 3</p>
+      <h2>Share the pizza fairly</h2>
+      <div class="mascot"><span class="face">🦉</span><p class="bubble">Four hungry friends just arrived! Cut the pizza so that <b>everyone gets the same amount</b>.</p></div>
+      <div class="panel">
+        <p class="friends" aria-label="Four friends">🧒🧑👧👦</p>
+        <div class="pizza-wrap" id="cutPizza"></div>
+        <div class="counter">
+          <button class="btn ghost" id="fewer" type="button" aria-label="Fewer slices">−</button>
+          <span id="sliceLabel" aria-live="polite">1 slice</span>
+          <button class="btn ghost" id="more" type="button" aria-label="More slices">+</button>
+        </div>
+        <p class="feedback" id="cutMsg"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Next →</button></div>
+    </section>
+
+    <section class="step" id="s2">
+      <p class="step-kicker">Step 2 of 3</p>
+      <h2>Eat exactly half</h2>
+      <div class="mascot"><span class="face">🦉</span><p class="bubble">This pizza has 8 slices. Tap slices to eat them (tap again to put one back). Can you eat <b>exactly half</b>?</p></div>
+      <div class="panel">
+        <div class="pizza-wrap" id="eatPizza"></div>
+        <p class="eat-readout" aria-live="polite">You ate <span id="eatFrac"></span> of the pizza</p>
+        <p class="feedback" id="eatMsg"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Next →</button></div>
+    </section>
+
+    <section class="step" id="s3">
+      <p class="step-kicker">Step 3 of 3</p>
+      <h2>Which piece is bigger?</h2>
+      <div class="mascot"><span class="face">🦉</span><p class="bubble">Tap the pizza that gives you <b>more</b> to eat. Look carefully: more slices doesn't always mean more pizza!</p></div>
+      <div class="panel">
+        <p class="round-label" id="roundLabel"></p>
+        <div class="vs" id="vs"></div>
+        <p class="feedback" id="vsMsg"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Finish →</button></div>
+    </section>
+
+    <section class="step finish">
+      <div class="medal">🏆</div>
+      <h2>Fraction Falls complete!</h2>
+      <p>You can share fairly, you know that <span class="frac"><span>4</span><span>8</span></span> is the same as <span class="frac"><span>1</span><span>2</span></span>, and you can tell which fraction is bigger. That's real fraction power!</p>
+      <p>Next up, the trail climbs into the <b>Wild Middle</b>, where things get a little more grown-up.</p>
+      <div class="controls center">
+        <a class="btn" href="equations.html">Next stop: Equation Bridge ⚖️</a>
+        <a class="btn ghost" href="../index.html">Back to the map</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/progress.js"></script>
+  <script src="../js/stop.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const frac = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+
+    // Draws a pizza cut into n slices. `eaten` = Set of eaten slice indexes; `show` = number of
+    // slices to highlight (the rest are faded) when picturing a fraction like 3/4.
+    function pizza(n, { eaten = new Set(), show = null, clickable = false } = {}) {
+      const c = 120, r = 100;
+      let s = `<svg class="pizza${clickable ? ' clickable' : ''}" viewBox="0 0 240 240" role="img" aria-label="A pizza cut into ${n} equal slices">`;
+      s += `<circle cx="${c}" cy="${c}" r="${r + 12}" fill="#d98c3a"/><circle cx="${c}" cy="${c}" r="${r + 4}" fill="#f2b45a"/>`;
+      for (let i = 0; i < n; i++) {
+        const a0 = (-90 + i * 360 / n) * Math.PI / 180, a1 = (-90 + (i + 1) * 360 / n) * Math.PI / 180;
+        let d;
+        if (n === 1) d = `M ${c - r} ${c} A ${r} ${r} 0 1 1 ${c + r} ${c} A ${r} ${r} 0 1 1 ${c - r} ${c} Z`;
+        else d = `M ${c} ${c} L ${c + r * Math.cos(a0)} ${c + r * Math.sin(a0)} A ${r} ${r} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${c + r * Math.cos(a1)} ${c + r * Math.sin(a1)} Z`;
+        const mid = (a0 + a1) / 2;
+        const peps = [[.6, 0], [.32, .5]].map(([k, off]) => {
+          const ang = n === 1 ? mid + off * 3 : mid + off * (a1 - a0) * .3;
+          return `<circle class="pep" cx="${c + r * k * Math.cos(ang)}" cy="${c + r * k * Math.sin(ang)}" r="${n > 8 ? 6 : 9}"/>`;
+        }).join('');
+        const cls = 'slice' + (eaten.has(i) ? ' eaten' : '') + (show !== null && i >= show ? ' dim' : '');
+        const extra = clickable ? ` tabindex="0" role="button" aria-label="Slice ${i + 1}${eaten.has(i) ? ', eaten' : ''}"` : '';
+        s += `<g class="${cls}" data-i="${i}"${extra}><path d="${d}"/>${peps}</g>`;
+      }
+      return s + '</svg>';
+    }
+
+    // ---------- Step 1 ----------
+    let slices = 1;
+    function renderCut() {
+      $('cutPizza').innerHTML = pizza(slices);
+      $('sliceLabel').textContent = `${slices} slice${slices === 1 ? '' : 's'}`;
+      if (slices === 4) {
+        Stop.say($('cutMsg'), 'Perfect! Each friend gets 1 slice out of 4. We write that as ¼, "one quarter".', 'good');
+        Stop.unlock($('s1'));
+      } else if (slices % 4 === 0) {
+        Stop.say($('cutMsg'), `That works too! Each friend gets ${slices / 4} slices out of ${slices}. Can you find the fewest cuts?`, 'good');
+      } else if (slices > 1) {
+        Stop.say($('cutMsg'), `${slices} slices can't be shared equally between 4 friends. Somebody gets left out! 😢`, 'bad');
+      } else Stop.say($('cutMsg'), '');
+    }
+    $('more').addEventListener('click', () => { if (slices < 12) { slices++; renderCut(); } });
+    $('fewer').addEventListener('click', () => { if (slices > 1) { slices--; renderCut(); } });
+    renderCut();
+
+    // ---------- Step 2 ----------
+    const eaten = new Set();
+    function renderEat() {
+      $('eatPizza').innerHTML = pizza(8, { eaten, clickable: true });
+      $('eatFrac').innerHTML = frac(eaten.size, 8);
+      const k = eaten.size;
+      if (k === 4) {
+        Stop.say($('eatMsg'), 'Exactly half! 4 out of 8 is the same amount as 1 out of 2. So 4/8 = 1/2. 🎉', 'good');
+        Stop.unlock($('s2'));
+      } else if (k > 4) Stop.say($('eatMsg'), "Whoa, that's more than half! Put some back.", 'bad');
+      else Stop.say($('eatMsg'), k ? 'Keep going…' : '');
+    }
+    function toggleSlice(g) {
+      const i = +g.dataset.i;
+      eaten.has(i) ? eaten.delete(i) : eaten.add(i);
+      renderEat();
+      const again = $('eatPizza').querySelector(`[data-i="${i}"]`);
+      if (again && document.activeElement === document.body) again.focus();
+    }
+    $('eatPizza').addEventListener('click', e => { const g = e.target.closest('.slice'); if (g) toggleSlice(g); });
+    $('eatPizza').addEventListener('keydown', e => {
+      const g = e.target.closest('.slice');
+      if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleSlice(g); }
+    });
+    renderEat();
+
+    // ---------- Step 3 ----------
+    const rounds = [
+      { a: [1, 2], b: [1, 4], why: 'Cutting into 2 makes bigger slices than cutting into 4.' },
+      { a: [1, 3], b: [1, 6], why: 'More slices means each slice is smaller, so 1/3 beats 1/6.' },
+      { a: [3, 4], b: [1, 2], why: '3/4 is more than half the pizza!' },
+    ];
+    let ri = 0;
+    function showRound() {
+      const r = rounds[ri];
+      $('roundLabel').textContent = `Round ${ri + 1} of ${rounds.length}`;
+      const order = Stop.shuffle([r.a, r.b]);
+      $('vs').innerHTML = '';
+      order.forEach((f, idx) => {
+        if (idx === 1) $('vs').insertAdjacentHTML('beforeend', '<span class="vs-word">or</span>');
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'pick';
+        b.setAttribute('aria-label', `${f[0]} out of ${f[1]}`);
+        b.innerHTML = pizza(f[1], { show: f[0] }) + frac(f[0], f[1]);
+        b.addEventListener('click', () => {
+          const bigger = r.a[0] / r.a[1] > r.b[0] / r.b[1] ? r.a : r.b;
+          if (f === bigger) {
+            b.classList.add('right');
+            $('vs').querySelectorAll('button').forEach(x => x.disabled = true);
+            ri++;
+            Stop.say($('vsMsg'), 'Yes! ' + r.why, 'good');
+            if (ri < rounds.length) setTimeout(() => { Stop.say($('vsMsg'), ''); showRound(); }, 1800);
+            else Stop.unlock($('s3'));
+          } else {
+            b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+            Stop.say($('vsMsg'), 'Look at how much pizza is coloured in, not how many slices there are.', 'bad');
+          }
+        });
+        $('vs').appendChild(b);
+      });
+    }
+    showRound();
+
+    Stop.init('fractions');
+  </script>
+</body>
+</html>

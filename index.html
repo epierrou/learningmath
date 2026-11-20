@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Math Map</title>
+  <meta name="description" content="A playful journey through math, from counting apples to calculus.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/map.css">
+</head>
+<body class="tier-primary map-page">
+
+  <header class="hero">
+    <div class="sun" aria-hidden="true"></div>
+    <p class="hero-kicker">A journey for everybody</p>
+    <h1>The Math Map</h1>
+    <p class="hero-sub">Start with counting apples. End up doing calculus.<br>Follow the trail, play with every idea, and the math grows up as you do.</p>
+    <a class="btn" id="continue" href="stops/counting.html">Start the journey ↓</a>
+  </header>
+
+  <main id="map" class="map">
+    <svg id="trail" class="trail" aria-hidden="true"></svg>
+
+    <section class="band tier-primary band-primary">
+      <div class="band-head">
+        <span class="band-tag">Primary</span>
+        <h2>The Sunny Lowlands</h2>
+        <p>Counting, sharing and building with blocks. Big, bright and full of play.</p>
+      </div>
+      <ol class="stops" data-tier="primary"></ol>
+    </section>
+
+    <section class="band tier-secondary band-secondary">
+      <div class="band-head">
+        <span class="band-tag">Secondary</span>
+        <h2>The Wild Middle</h2>
+        <p>Patterns turn into rules, rules into equations, and equations into pictures.</p>
+      </div>
+      <ol class="stops" data-tier="secondary"></ol>
+    </section>
+
+    <section class="band tier-advanced band-advanced">
+      <div class="band-head">
+        <span class="band-tag">Advanced</span>
+        <h2>The Starlit Heights</h2>
+        <p>Circles that make waves, and the mathematics of change itself.</p>
+      </div>
+      <ol class="stops" data-tier="advanced"></ol>
+    </section>
+
+    <footer class="map-foot tier-advanced">
+      <p id="progressText"></p>
+      <button class="link-btn" id="reset" type="button">Reset my progress</button>
+    </footer>
+  </main>
+
+  <dialog id="skip" class="tier-secondary">
+    <form method="dialog">
+      <h3>Skip ahead?</h3>
+      <p>This stop builds on the ones before it. If you already know the basics, jump right in.</p>
+      <div class="controls">
+        <a class="btn" id="skipGo" href="#">Take me there</a>
+        <button class="btn ghost" value="cancel">Stay on the trail</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/progress.js"></script>
+  <script src="js/map.js"></script>
+</body>
+</html>

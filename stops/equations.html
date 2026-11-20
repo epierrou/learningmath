@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Equation Bridge · The Math Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    .scale { width: 100%; max-width: 520px; display: block; margin: 0 auto; }
+    .scale .beam, .scale .pan { transition: transform .6s cubic-bezier(.3, 1.4, .5, 1); }
+    .scale .metal { stroke: #8496ad; stroke-width: 3; fill: none; }
+    .scale .plate { stroke: #56677a; stroke-width: 5; stroke-linecap: round; }
+    .scale .xbox rect { fill: var(--accent-3); }
+    .scale .xbox text { fill: #fff; font: italic 700 18px Georgia, serif; }
+    .scale .unit rect { fill: var(--accent-2); }
+    .scale .unit text { fill: #fff; font: 700 11px Inter, sans-serif; }
+    .equation {
+      text-align: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: clamp(1.8rem, 7vw, 2.6rem); margin: 8px 0 0; font-variant-numeric: tabular-nums;
+    }
+    .equation .x { color: var(--accent-3); font-family: Georgia, serif; font-style: italic; }
+    .equation .neq { color: var(--bad); }
+    .practice { text-align: center; }
+    .practice .equation { margin-bottom: 14px; }
+    .practice form { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .tally { color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+    .note { border-left: 4px solid var(--accent); padding: 4px 0 4px 14px; color: var(--muted); }
+  </style>
+</head>
+<body class="tier-secondary">
+  <header class="stop-top">
+    <a class="back" href="../index.html">← Map</a>
+    <span class="stop-title">⚖️ Equation Bridge</span>
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <main class="stop">
+    <section class="step" id="s1">
+      <p class="step-kicker">Step 1 of 3 · The big idea</p>
+      <h2>An equation is a balanced scale</h2>
+      <p class="lead">The purple box weighs some unknown amount. We call it <b>x</b>. Each teal block weighs 1. The scale is level, so both sides weigh the same: that's what "=" means.</p>
+      <div class="panel">
+        <div id="scale1"></div>
+        <p class="equation" id="eq1" aria-live="polite"></p>
+        <div class="controls">
+          <button class="btn ghost" data-op="left" type="button">Remove 1 from left</button>
+          <button class="btn ghost" data-op="right" type="button">Remove 1 from right</button>
+          <button class="btn" data-op="both" type="button">Remove 1 from both</button>
+          <button class="btn ghost" data-op="reset" type="button">Reset</button>
+        </div>
+        <p class="feedback" id="msg1"></p>
+      </div>
+      <p class="note">Goal: get the box alone on one side <i>without</i> tipping the scale. Then you'll know exactly what x weighs.</p>
+      <div class="step-actions"><button class="btn next" disabled>Next →</button></div>
+    </section>
+
+    <section class="step" id="s2">
+      <p class="step-kicker">Step 2 of 3 · Two moves</p>
+      <h2>Now there are two boxes</h2>
+      <p class="lead">Removing blocks gets you part of the way. But two boxes balancing eight blocks tells you something else: one box must balance half of them.</p>
+      <div class="panel">
+        <div id="scale2"></div>
+        <p class="equation" id="eq2" aria-live="polite"></p>
+        <div class="controls">
+          <button class="btn" data-op="both" type="button">Remove 1 from both</button>
+          <button class="btn" data-op="half" type="button">Halve both sides</button>
+          <button class="btn ghost" data-op="reset" type="button">Reset</button>
+        </div>
+        <p class="feedback" id="msg2"></p>
+      </div>
+      <p class="note">The golden rule: <b>whatever you do to one side, do to the other.</b> Every algebra trick you'll ever learn is that rule in disguise.</p>
+      <div class="step-actions"><button class="btn next" disabled>Next →</button></div>
+    </section>
+
+    <section class="step" id="s3">
+      <p class="step-kicker">Step 3 of 3 · Your turn</p>
+      <h2>Solve it in your head</h2>
+      <p class="lead">No scale this time. Picture it: first take away the loose blocks, then split the rest evenly between the boxes.</p>
+      <div class="panel practice">
+        <p class="tally" id="tally"></p>
+        <p class="equation" id="eq3"></p>
+        <form id="answerForm" autocomplete="off">
+          <label for="answer"><span class="x" style="font-family:Georgia,serif;font-style:italic;font-size:1.3em">x</span> =</label>
+          <input class="answer" id="answer" type="number" inputmode="numeric" required>
+          <button class="btn" type="submit">Check</button>
+        </form>
+        <p class="feedback" id="msg3"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Finish →</button></div>
+    </section>
+
+    <section class="step finish">
+      <div class="medal">🌉</div>
+      <h2>You crossed Equation Bridge</h2>
+      <p>You've just learned the core move of algebra: keep things balanced and undo the operations one at a time. From here on, x is just a box with a question mark on it.</p>
+      <p>Ahead lie the <b>Starlit Heights</b>, where the ideas get deeper and the style gets more serious.</p>
+      <div class="controls center">
+        <a class="btn" href="calculus.html">Next stop: Calculus Canyon ∞</a>
+        <a class="btn ghost" href="../index.html">Back to the map</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/progress.js"></script>
+  <script src="../js/stop.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+
+    // A balance puzzle: left side = a boxes + b blocks, right side = c blocks. Box weighs `x`.
+    function makeScale(host, eqEl, msgEl, start, ops, section) {
+      const PX = 260, PY = 70, L = 170;
+      host.innerHTML = `
+        <svg class="scale" viewBox="0 0 520 300" role="img" aria-label="Balance scale">
+          <path class="metal" d="M ${PX} ${PY} L ${PX - 40} 270 M ${PX} ${PY} L ${PX + 40} 270" stroke-width="6"/>
+          <rect x="${PX - 80}" y="268" width="160" height="12" rx="6" fill="#8496ad"/>
+          <g class="beam" style="transform-origin:${PX}px ${PY}px">
+            <rect x="${PX - L - 6}" y="${PY - 5}" width="${2 * L + 12}" height="10" rx="5" fill="#56677a"/>
+          </g>
+          <circle cx="${PX}" cy="${PY}" r="9" fill="#2f6fed"/>
+          <g class="pan" data-side="left"></g>
+          <g class="pan" data-side="right"></g>
+        </svg>`;
+      const beam = host.querySelector('.beam');
+      const pans = { left: host.querySelector('[data-side=left]'), right: host.querySelector('[data-side=right]') };
+      let s = { ...start };
+
+      const item = (kind, x, y) => kind === 'x'
+        ? `<g class="xbox"><rect x="${x}" y="${y - 34}" width="34" height="34" rx="5"/><text x="${x + 17}" y="${y - 11}" text-anchor="middle">x</text></g>`
+        : `<g class="unit"><rect x="${x}" y="${y - 20}" width="20" height="20" rx="3"/><text x="${x + 10}" y="${y - 6}" text-anchor="middle">1</text></g>`;
+
+      function panContents(list) {
+        // Flow items left-to-right across the plate, stacking upward when a row fills.
+        let out = '', cx = -66, row = 0;
+        list.forEach(k => {
+          const w = k === 'x' ? 34 : 20;
+          if (cx + w > 66) { cx = -66; row++; }
+          out += item(k, cx, 58 - row * 36);
+          cx += w + 4;
+        });
+        return out;
+      }
+
+      function eqText() {
+        const left = `${s.a === 1 ? '' : s.a}<span class="x">x</span>${s.b ? ' + ' + s.b : ''}`;
+        const balanced = s.a * start.x + s.b === s.c;
+        return { html: `${left} <span class="${balanced ? '' : 'neq'}">${balanced ? '=' : '≠'}</span> ${s.c}`, balanced };
+      }
+
+      function render() {
+        const lw = s.a * start.x + s.b, rw = s.c;
+        const deg = Math.max(-14, Math.min(14, (rw - lw) * 3));
+        const rad = deg * Math.PI / 180;
+        beam.style.transform = `rotate(${deg}deg)`;
+        const ends = { left: [PX - L * Math.cos(rad), PY - L * Math.sin(rad)], right: [PX + L * Math.cos(rad), PY + L * Math.sin(rad)] };
+        ['left', 'right'].forEach(side => {
+          const [ex, ey] = ends[side];
+          pans[side].style.transform = `translate(${ex}px, ${ey}px)`;
+          const list = side === 'left' ? [...Array(s.a).fill('x'), ...Array(s.b).fill('1')] : Array(s.c).fill('1');
+          pans[side].innerHTML = `<path class="metal" d="M 0 0 L -70 60 M 0 0 L 70 60"/><line class="plate" x1="-76" y1="60" x2="76" y2="60"/>` + panContents(list);
+        });
+        const e = eqText();
+        eqEl.innerHTML = e.html;
+        return e.balanced;
+      }
+
+      function apply(op) {
+        if (op === 'reset') { s = { ...start }; render(); return Stop.say(msgEl, ''); }
+        const result = ops[op](s);
+        if (typeof result === 'string') return Stop.say(msgEl, result, 'bad');
+        const balanced = render();
+        if (!balanced) Stop.say(msgEl, 'The scale tipped! You changed only one side, so the sides are no longer equal. Press Reset and try again.', 'bad');
+        else if (s.a === 1 && s.b === 0) { Stop.say(msgEl, `Balanced, with the box alone: x = ${s.c}. Solved!`, 'good'); Stop.unlock(section); }
+        else Stop.say(msgEl, 'Still balanced. Keep going.', 'good');
+      }
+
+      section.querySelectorAll('[data-op]').forEach(b => b.addEventListener('click', () => apply(b.dataset.op)));
+      render();
+    }
+
+    // ---------- Step 1: x + 3 = 7 ----------
+    makeScale($('scale1'), $('eq1'), $('msg1'), { a: 1, b: 3, c: 7, x: 4 }, {
+      left: s => s.b > 0 ? void s.b-- : 'There are no loose blocks left on that side.',
+      right: s => s.c > 0 ? void s.c-- : 'There are no blocks left on that side.',
+      both: s => (s.b > 0 && s.c > 0) ? void (s.b--, s.c--) : 'One side has no loose blocks left to remove.',
+    }, $('s1'));
+
+    // ---------- Step 2: 2x + 1 = 9 ----------
+    makeScale($('scale2'), $('eq2'), $('msg2'), { a: 2, b: 1, c: 9, x: 4 }, {
+      both: s => (s.b > 0 && s.c > 0) ? void (s.b--, s.c--) : 'No loose blocks left on the left side. Try something else.',
+      half: s => {
+        if (s.a % 2 || s.b % 2 || s.c % 2) return `Can't split that evenly: ${s.b % 2 ? 'that single loose block' : 'an odd number'} would have to be cut in half. Tidy up first.`;
+        s.a /= 2; s.b /= 2; s.c /= 2;
+      },
+    }, $('s2'));
+
+    // ---------- Step 3: practice ----------
+    const NEEDED = 3;
+    let solved = 0, prob;
+    function newProblem() {
+      const a = 2 + Math.floor(Math.random() * 4), x = 1 + Math.floor(Math.random() * 9), b = 1 + Math.floor(Math.random() * 9);
+      prob = { a, b, x, c: a * x + b };
+      $('eq3').innerHTML = `${a}<span class="x">x</span> + ${b} = ${prob.c}`;
+      $('tally').textContent = `${solved} of ${NEEDED} solved`;
+      $('answer').value = '';
+    }
+    $('answerForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const v = Number($('answer').value);
+      if (v === prob.x) {
+        solved++;
+        if (solved >= NEEDED) {
+          $('tally').textContent = `${solved} of ${NEEDED} solved`;
+          Stop.say($('msg3'), `Correct, x = ${prob.x}. Three for three. You're an algebra natural.`, 'good');
+          $('answerForm').querySelectorAll('input, button').forEach(el => el.disabled = true);
+          Stop.unlock($('s3'));
+        } else {
+          Stop.say($('msg3'), `Correct! ${prob.c} − ${prob.b} = ${prob.c - prob.b}, and ${prob.c - prob.b} ÷ ${prob.a} = ${prob.x}.`, 'good');
+          newProblem();
+        }
+      } else {
+        Stop.say($('msg3'), `Not quite. First remove the ${prob.b} loose blocks: ${prob.c} − ${prob.b} = ? Then share what's left between ${prob.a} boxes.`, 'bad');
+      }
+    });
+    newProblem();
+
+    Stop.init('equations');
+  </script>
+</body>
+</html>

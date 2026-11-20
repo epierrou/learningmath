@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Counting Village · The Math Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    .apples { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .apple {
+      position: relative; width: 74px; height: 74px; border-radius: 50%; cursor: pointer;
+      border: 3px dashed var(--line); background: #fff; font-size: 42px; display: grid; place-items: center;
+      transition: transform .15s, background .15s;
+    }
+    .apple:hover { transform: scale(1.08) rotate(-5deg); }
+    .apple.counted { border-style: solid; border-color: var(--accent-2); background: #eafaf1; }
+    .apple .tag {
+      position: absolute; top: -8px; right: -8px; min-width: 30px; height: 30px; border-radius: 15px;
+      background: var(--accent-2); color: #fff; font-size: 17px; font-weight: 800; display: none; place-items: center;
+    }
+    .apple.counted .tag { display: grid; animation: pop .35s ease both; }
+    .big-count { text-align: center; font-size: 1.4em; margin: 16px 0 0; }
+    .big-count b { font-size: 1.4em; color: var(--accent); }
+
+    .target { text-align: center; font-size: 1.3em; margin: 0 0 12px; }
+    .target b { display: inline-block; min-width: 2.2ch; padding: 0 .3em; border-radius: 12px; background: var(--accent-3); }
+    .blocks {
+      display: flex; gap: 22px; align-items: flex-end; justify-content: center; flex-wrap: wrap;
+      min-height: 190px; padding: 14px; border-radius: 18px; background: #fffdf6; border: 3px solid var(--line);
+    }
+    .blocks.small { min-height: 0; }
+    .rods { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+    .rod { display: grid; grid-template-rows: repeat(10, 14px); gap: 2px; padding: 3px; border-radius: 6px; background: #2b6fd6; }
+    .rod i { display: block; width: 16px; border-radius: 2px; background: #6aa7ff; }
+    .rod.new { animation: pop .45s ease both; }
+    .ones { display: grid; grid-template-columns: repeat(5, 22px); gap: 5px; align-content: end; }
+    .cube { display: block; width: 22px; height: 22px; border-radius: 5px; background: #ff8a3d; box-shadow: inset 0 -4px 0 #d9661d; }
+    .cube.new { animation: pop .3s ease both; }
+    .empty-hint { color: var(--muted); align-self: center; }
+    .numline { display: flex; justify-content: center; gap: 2px; margin-top: 14px; font-size: 68px; font-weight: 800; line-height: 1; }
+    .numline .t { color: #2b6fd6; } .numline .o { color: #ff8a3d; }
+    .legend { display: flex; justify-content: center; gap: 26px; font-weight: 700; color: var(--muted); }
+    .legend .t::before, .legend .o::before { content: ''; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; }
+    .legend .t::before { background: #2b6fd6; } .legend .o::before { background: #ff8a3d; }
+    .round-label { text-align: center; color: var(--muted); font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body class="tier-primary">
+  <header class="stop-top">
+    <a class="back" href="../index.html">← Map</a>
+    <span class="stop-title">🏡 Counting Village</span>
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <main class="stop">
+    <!-- Step 1: one-to-one counting -->
+    <section class="step" id="s1">
+      <p class="step-kicker">Step 1 of 3</p>
+      <h2>Let's count apples!</h2>
+      <div class="mascot"><span class="face">🦉</span><p class="bubble">Hi, I'm Pip! Tap each apple <b>once</b> to count it. No apple gets counted twice!</p></div>
+      <div class="panel">
+        <div class="apples" id="apples"></div>
+        <p class="big-count">Apples counted: <b id="appleCount">0</b></p>
+        <p class="feedback" id="appleMsg"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Next →</button></div>
+    </section>
+
+    <!-- Step 2: grouping in tens -->
+    <section class="step" id="s2">
+      <p class="step-kicker">Step 2 of 3</p>
+      <h2>Too many? Make tens!</h2>
+      <div class="mascot"><span class="face">🦉</span><p class="bubble">Counting one by one gets slow. When you have <b>10 cubes</b>, they snap into a <b>rod</b>. One rod = 10!</p></div>
+      <div class="panel">
+        <p class="target">Can you make <b id="target">13</b>?</p>
+        <div class="blocks" id="builder"><div class="rods" id="rods"></div><div class="ones" id="ones"></div></div>
+        <div class="numline" aria-live="polite"><span class="t" id="dT">0</span><span class="o" id="dO">0</span></div>
+        <div class="legend"><span class="t">tens</span><span class="o">ones</span></div>
+        <div class="controls center">
+          <button class="btn" id="add1" type="button">+1 cube</button>
+          <button class="btn" id="add10" type="button">+1 rod</button>
+          <button class="btn ghost" id="sub1" type="button">−1 cube</button>
+          <button class="btn ghost" id="clear" type="button">Start over</button>
+        </div>
+        <p class="feedback" id="tenMsg"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Next →</button></div>
+    </section>
+
+    <!-- Step 3: read the number -->
+    <section class="step" id="s3">
+      <p class="step-kicker">Step 3 of 3</p>
+      <h2>What number is this?</h2>
+      <div class="mascot"><span class="face">🦉</span><p class="bubble">Count the rods first (each is 10), then add the loose cubes.</p></div>
+      <div class="panel">
+        <p class="round-label" id="roundLabel"></p>
+        <div class="blocks small" id="quizBlocks"></div>
+        <div class="choices" id="quizChoices"></div>
+        <p class="feedback" id="quizMsg"></p>
+      </div>
+      <div class="step-actions"><button class="btn next" disabled>Finish →</button></div>
+    </section>
+
+    <section class="step finish">
+      <div class="medal">🏅</div>
+      <h2>Counting Village complete!</h2>
+      <p>You counted carefully, grouped cubes into tens, and read big numbers like a pro. Pip is very proud of you!</p>
+      <div class="controls center">
+        <a class="btn" href="fractions.html">Next stop: Fraction Falls 🍕</a>
+        <a class="btn ghost" href="../index.html">Back to the map</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/progress.js"></script>
+  <script src="../js/stop.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+
+    // ---------- Step 1 ----------
+    const TOTAL = 7;
+    let counted = 0;
+    for (let i = 0; i < TOTAL; i++) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'apple'; b.setAttribute('aria-label', 'Apple');
+      b.innerHTML = '<span aria-hidden="true">🍎</span><span class="tag"></span>';
+      b.addEventListener('click', () => {
+        if (b.classList.contains('counted')) { Stop.say($('appleMsg'), 'That one is already counted!', 'bad'); return; }
+        counted++;
+        b.classList.add('counted');
+        b.querySelector('.tag').textContent = counted;
+        $('appleCount').textContent = counted;
+        if (counted === TOTAL) { Stop.say($('appleMsg'), 'You counted 7 apples! 🎉 The last number you say is how many there are.', 'good'); Stop.unlock($('s1')); }
+        else Stop.say($('appleMsg'), '');
+      });
+      $('apples').appendChild(b);
+    }
+
+    // ---------- Step 2 ----------
+    const blocksHTML = (t, o) =>
+      '<div class="rods">' + ('<div class="rod">' + '<i></i>'.repeat(10) + '</div>').repeat(t) + '</div>' +
+      '<div class="ones">' + '<i class="cube"></i>'.repeat(o) + '</div>';
+
+    const targets = [13, 31, 40];
+    let n = 0, ti = 0, lastTens = 0, lastOnes = 0;
+
+    function renderBuilder() {
+      const t = Math.floor(n / 10), o = n % 10;
+      $('rods').innerHTML = Array.from({ length: t }, (_, i) =>
+        `<div class="rod${i >= lastTens ? ' new' : ''}">${'<i></i>'.repeat(10)}</div>`).join('');
+      $('ones').innerHTML = Array.from({ length: o }, (_, i) =>
+        `<i class="cube${t === lastTens && i >= lastOnes ? ' new' : ''}"></i>`).join('');
+      $('dT').textContent = t; $('dO').textContent = o;
+      lastTens = t; lastOnes = o;
+    }
+
+    function checkTarget() {
+      if (ti >= targets.length || n !== targets[ti]) return;
+      const t = Math.floor(n / 10), o = n % 10;
+      ti++;
+      if (ti < targets.length) {
+        Stop.say($('tenMsg'), `Yes! ${n} is ${t} tens and ${o} ones. Now try ${targets[ti]}!`, 'good');
+        $('target').textContent = targets[ti];
+      } else {
+        Stop.say($('tenMsg'), `Brilliant! ${n} is ${t} rods and zero loose cubes. That zero matters!`, 'good');
+        $('target').textContent = '✓';
+        Stop.unlock($('s2'));
+      }
+    }
+
+    $('add1').addEventListener('click', () => {
+      if (n >= 99) return Stop.say($('tenMsg'), "That's as big as we go here: 99!", 'bad');
+      n++;
+      Stop.say($('tenMsg'), n % 10 === 0 ? 'Snap! ✨ 10 cubes made a rod.' : '');
+      renderBuilder(); checkTarget();
+    });
+    $('add10').addEventListener('click', () => {
+      if (n + 10 > 99) return Stop.say($('tenMsg'), "That's as big as we go here: 99!", 'bad');
+      n += 10; Stop.say($('tenMsg'), ''); renderBuilder(); checkTarget();
+    });
+    $('sub1').addEventListener('click', () => {
+      if (n === 0) return;
+      const broke = n % 10 === 0;
+      n--;
+      Stop.say($('tenMsg'), broke ? 'Crack! A rod broke back into 10 cubes, and one went away.' : '');
+      renderBuilder(); checkTarget();
+    });
+    $('clear').addEventListener('click', () => { n = 0; Stop.say($('tenMsg'), ''); renderBuilder(); });
+    renderBuilder();
+
+    // ---------- Step 3 ----------
+    const rounds = [
+      { t: 4, o: 7, options: [47, 74, 11] },
+      { t: 2, o: 5, options: [25, 52, 7] },
+      { t: 6, o: 0, options: [60, 6, 16] },
+    ];
+    let ri = 0;
+    function showRound() {
+      const r = rounds[ri];
+      $('roundLabel').textContent = `Puzzle ${ri + 1} of ${rounds.length}`;
+      $('quizBlocks').innerHTML = blocksHTML(r.t, r.o);
+      $('quizChoices').innerHTML = '';
+      Stop.shuffle(r.options).forEach(v => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice'; b.textContent = v;
+        b.addEventListener('click', () => {
+          const right = r.t * 10 + r.o;
+          if (v === right) {
+            b.classList.add('right');
+            $('quizChoices').querySelectorAll('button').forEach(x => x.disabled = true);
+            ri++;
+            if (ri < rounds.length) {
+              Stop.say($('quizMsg'), `Yes! ${r.t} tens and ${r.o} ones make ${right}.`, 'good');
+              setTimeout(() => { Stop.say($('quizMsg'), ''); showRound(); }, 1300);
+            } else {
+              Stop.say($('quizMsg'), `Yes, ${right}! You read every number. 🌟`, 'good');
+              Stop.unlock($('s3'));
+            }
+          } else {
+            b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+            Stop.say($('quizMsg'), 'Not quite. Count the rods first: each rod is 10.', 'bad');
+          }
+        });
+        $('quizChoices').appendChild(b);
+      });
+    }
+    showRound();
+
+    Stop.init('counting');
+  </script>
+</body>
+</html>
